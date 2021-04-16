@@ -22,15 +22,10 @@ export default {
   components: {
     TodoItem,
   },
-  data() {
-    return {
-      todos: [
-        { id: 1, text: "Learn JavaScript", done: true },
-        { id: 2, text: "Learn Vue 3", done: true },
-        { id: 3, text: "Learn Bootstrap 5", done: false },
-        { id: 4, text: "Build something awesome!", done: false },
-      ],
-    };
+  computed: {
+    todos() {
+      return this.$store.state.todos;
+    },
   },
 };
 </script>
