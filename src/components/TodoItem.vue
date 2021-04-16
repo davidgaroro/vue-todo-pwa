@@ -11,6 +11,7 @@
     </div>
     <input
       class="form-control form-control-plaintext p-1"
+      :class="{ 'text-primary': todo.done }"
       type="text"
       aria-label="Todo text"
       :value="todo.text"

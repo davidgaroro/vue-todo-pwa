@@ -9,10 +9,15 @@
     placeholder="What needs to be done?"
     @keyup.enter="addTodo"
   />
-  <ul class="list-group mb-2">
+  <ul class="list-group mb-2" v-show="todos.length">
     <TodoItem v-for="todo in todos" :key="todo.id" :todo="todo" />
   </ul>
-  <button type="button" class="btn btn-primary w-100" @click="clearCompleted">
+  <button
+    type="button"
+    class="btn btn-primary w-100"
+    v-show="todos.length > remaining"
+    @click="clearCompleted"
+  >
     Clear completed
   </button>
 </template>
@@ -29,6 +34,9 @@ export default {
   computed: {
     todos() {
       return this.$store.state.todos;
+    },
+    remaining() {
+      return this.todos.filter((todo) => !todo.done).length;
     },
   },
   methods: {
