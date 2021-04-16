@@ -45,6 +45,10 @@ const actions = {
     commit("removeTodo", todo);
   },
 
+  toggleTodo({ commit }, todo) {
+    commit("editTodo", { todo, done: !todo.done });
+  },
+
   editTodo({ commit }, { todo, value }) {
     commit("editTodo", { todo, text: value });
   },

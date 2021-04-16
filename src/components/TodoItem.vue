@@ -6,6 +6,7 @@
         type="checkbox"
         aria-label="Todo checkbox"
         :checked="todo.done"
+        @change="toggleTodo(todo)"
       />
     </div>
     <input
@@ -35,7 +36,7 @@ export default {
     todo: Object,
   },
   methods: {
-    ...mapActions(["editTodo", "removeTodo"]),
+    ...mapActions(["toggleTodo", "editTodo", "removeTodo"]),
     doneEdit(e) {
       const value = e.target.value.trim();
       const todo = this.todo;
