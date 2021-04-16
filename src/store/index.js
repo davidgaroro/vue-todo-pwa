@@ -53,6 +53,12 @@ const actions = {
     commit("editTodo", { todo, text: value });
   },
 
+  toggleAll({ state, commit }, done) {
+    state.todos.forEach((todo) => {
+      commit("editTodo", { todo, done });
+    });
+  },
+
   clearCompleted({ state, commit }) {
     state.todos
       .filter((todo) => todo.done)

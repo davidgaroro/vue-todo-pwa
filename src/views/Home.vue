@@ -9,7 +9,22 @@
     placeholder="What needs to be done?"
     @keyup.enter="addTodo"
   />
-  <ul class="list-group mb-2" v-show="todos.length">
+  <ul class="list-group mb-3" v-show="todos.length">
+    <li
+      class="list-group-item d-flex justify-content-between align-items-center"
+    >
+      <div>
+        <input
+          class="form-check-input me-3"
+          type="checkbox"
+          aria-label="Select all"
+          :checked="allChecked"
+          @change="toggleAll(!allChecked)"
+        />
+        <strong>{{ remaining }}</strong>
+        {{ pluralize(remaining, "item") }} left
+      </div>
+    </li>
     <TodoItem v-for="todo in todos" :key="todo.id" :todo="todo" />
   </ul>
   <button
@@ -35,12 +50,15 @@ export default {
     todos() {
       return this.$store.state.todos;
     },
+    allChecked() {
+      return this.todos.every((todo) => todo.done);
+    },
     remaining() {
       return this.todos.filter((todo) => !todo.done).length;
     },
   },
   methods: {
-    ...mapActions(["clearCompleted"]),
+    ...mapActions(["toggleAll", "clearCompleted"]),
     addTodo(e) {
       const text = e.target.value;
       if (text.trim()) {
@@ -51,6 +69,15 @@ export default {
         e.target.value = "";
       }
     },
+    pluralize(n, w) {
+      return n === 1 ? w : w + "s";
+    },
   },
 };
 </script>
+
+<style lang="scss">
+.form-check-input {
+  cursor: pointer;
+}
+</style>

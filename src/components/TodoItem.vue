@@ -1,8 +1,8 @@
 <template>
   <li class="list-group-item d-flex justify-content-between align-items-center">
-    <div class="my-auto">
+    <div>
       <input
-        class="form-check-input me-3"
+        class="form-check-input me-2"
         type="checkbox"
         aria-label="Todo checkbox"
         :checked="todo.done"
@@ -56,10 +56,3 @@ export default {
   },
 };
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss">
-.form-check-input {
-  cursor: pointer;
-}
-</style>
