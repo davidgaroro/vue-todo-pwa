@@ -9,13 +9,16 @@
     placeholder="What needs to be done?"
     @keyup.enter="addTodo"
   />
-  <ul class="list-group">
+  <ul class="list-group mb-2">
     <TodoItem v-for="todo in todos" :key="todo.id" :todo="todo" />
   </ul>
+  <button type="button" class="btn btn-primary w-100" @click="clearCompleted">
+    Clear completed
+  </button>
 </template>
 
 <script>
-// @ is an alias to /src
+import { mapActions } from "vuex";
 import TodoItem from "@/components/TodoItem.vue";
 
 export default {
@@ -29,6 +32,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions(["clearCompleted"]),
     addTodo(e) {
       const text = e.target.value;
       if (text.trim()) {
