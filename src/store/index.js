@@ -19,6 +19,16 @@ const mutations = {
   removeTodo(state, todo) {
     state.todos.splice(state.todos.indexOf(todo), 1);
   },
+
+  editTodo(state, { todo, text = todo.text, done = todo.done }) {
+    const index = state.todos.indexOf(todo);
+
+    state.todos.splice(index, 1, {
+      ...todo,
+      text,
+      done,
+    });
+  },
 };
 
 // actions
@@ -33,6 +43,10 @@ const actions = {
 
   removeTodo({ commit }, todo) {
     commit("removeTodo", todo);
+  },
+
+  editTodo({ commit }, { todo, value }) {
+    commit("editTodo", { todo, text: value });
   },
 };
 

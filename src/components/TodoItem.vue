@@ -13,6 +13,9 @@
       type="text"
       aria-label="Todo text"
       :value="todo.text"
+      @keyup.enter="doneEdit"
+      @keyup.esc="cancelEdit"
+      @blur="doneEdit"
     />
     <button
       type="button"
@@ -32,7 +35,22 @@ export default {
     todo: Object,
   },
   methods: {
-    ...mapActions(["removeTodo"]),
+    ...mapActions(["editTodo", "removeTodo"]),
+    doneEdit(e) {
+      const value = e.target.value.trim();
+      const todo = this.todo;
+      if (!value) {
+        this.removeTodo(todo);
+      } else {
+        this.editTodo({
+          todo,
+          value,
+        });
+      }
+    },
+    cancelEdit(e) {
+      e.target.blur();
+    },
   },
 };
 </script>
