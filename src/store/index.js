@@ -52,6 +52,14 @@ const actions = {
   editTodo({ commit }, { todo, value }) {
     commit("editTodo", { todo, text: value });
   },
+
+  clearCompleted({ state, commit }) {
+    state.todos
+      .filter((todo) => todo.done)
+      .forEach((todo) => {
+        commit("removeTodo", todo);
+      });
+  },
 };
 
 export default createStore({
