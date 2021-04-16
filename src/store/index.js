@@ -10,9 +10,35 @@ const state = {
   ],
 };
 
+// mutations
+const mutations = {
+  addTodo(state, todo) {
+    state.todos.push(todo);
+  },
+
+  removeTodo(state, todo) {
+    state.todos.splice(state.todos.indexOf(todo), 1);
+  },
+};
+
+// actions
+const actions = {
+  addTodo({ commit }, text) {
+    commit("addTodo", {
+      id: Date.now(),
+      text,
+      done: false,
+    });
+  },
+
+  removeTodo({ commit }, todo) {
+    commit("removeTodo", todo);
+  },
+};
+
 export default createStore({
   state,
-  mutations: {},
-  actions: {},
+  mutations,
+  actions,
   modules: {},
 });

@@ -7,6 +7,7 @@
     autocomplete="off"
     aria-label="New todo text"
     placeholder="What needs to be done?"
+    @keyup.enter="addTodo"
   />
   <ul class="list-group">
     <TodoItem v-for="todo in todos" :key="todo.id" :todo="todo" />
@@ -25,6 +26,18 @@ export default {
   computed: {
     todos() {
       return this.$store.state.todos;
+    },
+  },
+  methods: {
+    addTodo(e) {
+      const text = e.target.value;
+      if (text.trim()) {
+        // Add new todo
+        this.$store.dispatch("addTodo", text);
+
+        // Clear input text
+        e.target.value = "";
+      }
     },
   },
 };

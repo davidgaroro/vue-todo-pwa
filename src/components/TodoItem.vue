@@ -18,15 +18,21 @@
       type="button"
       class="btn-close btn-sm ms-2"
       aria-label="Remove todo"
+      @click="removeTodo(todo)"
     ></button>
   </li>
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
   name: "TodoItem",
   props: {
     todo: Object,
+  },
+  methods: {
+    ...mapActions(["removeTodo"]),
   },
 };
 </script>
