@@ -1,18 +1,23 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
-  </div>
+  <h1 class="mt-5 mb-4 text-primary">TODOS</h1>
+  <input
+    class="form-control form-control-lg mb-3"
+    type="text"
+    autofocus
+    autocomplete="off"
+    aria-label="New todo text"
+    placeholder="What needs to be done?"
+  />
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
+// import HelloWorld from "@/components/HelloWorld.vue";
 
 export default {
   name: "Home",
-  components: {
+  /* components: {
     HelloWorld,
-  },
+  }, */
 };
 </script>
