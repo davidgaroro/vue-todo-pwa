@@ -52,6 +52,7 @@
 <script>
 import { mapActions } from "vuex";
 import TodoItem from "@/components/TodoItem.vue";
+// import TodoItem from "@/components/TodoItem.composition.vue"; // made with composition api
 
 const filters = {
   all: (todos) => todos,
