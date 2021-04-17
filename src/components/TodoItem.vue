@@ -2,9 +2,8 @@
   <li class="list-group-item d-flex justify-content-between align-items-center">
     <div>
       <input
-        class="form-check-input me-2"
+        class="form-check-input me-3"
         type="checkbox"
-        aria-label="Todo checkbox"
         :checked="todo.done"
         @change="toggleTodo(todo)"
       />
@@ -13,7 +12,6 @@
       class="form-control form-control-plaintext p-1"
       :class="{ 'text-primary': todo.done }"
       type="text"
-      aria-label="Todo text"
       :value="todo.text"
       @keyup.enter="doneEdit"
       @keyup.esc="cancelEdit"
@@ -22,7 +20,6 @@
     <button
       type="button"
       class="btn-close btn-sm ms-2"
-      aria-label="Remove todo"
       @click="removeTodo(todo)"
     ></button>
   </li>

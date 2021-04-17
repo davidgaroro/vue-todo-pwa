@@ -5,7 +5,6 @@
     type="text"
     autofocus
     autocomplete="off"
-    aria-label="New todo text"
     placeholder="What needs to be done?"
     @keyup.enter="addTodo"
   />
@@ -17,15 +16,29 @@
         <input
           class="form-check-input me-3"
           type="checkbox"
-          aria-label="Select all"
           :checked="allChecked"
           @change="toggleAll(!allChecked)"
         />
-        <strong>{{ remaining }}</strong>
-        {{ pluralize(remaining, "item") }} left
+        <span class="px-1 text-secondary">
+          {{ remaining }}
+          {{ pluralize(remaining, "item") }} left
+        </span>
       </div>
+      <nav class="nav">
+        <ul class="nav">
+          <li class="nav-item" v-for="(val, key) in filters" :key="key">
+            <a
+              class="nav-link px-2 py-1"
+              :href="'#/' + key"
+              :class="{ 'link-secondary': visibility !== key }"
+              @click="visibility = key"
+              >{{ capitalize(key) }}</a
+            >
+          </li>
+        </ul>
+      </nav>
     </li>
-    <TodoItem v-for="todo in todos" :key="todo.id" :todo="todo" />
+    <TodoItem v-for="todo in filteredTodos" :key="todo.id" :todo="todo" />
   </ul>
   <button
     type="button"
@@ -41,10 +54,25 @@
 import { mapActions } from "vuex";
 import TodoItem from "@/components/TodoItem.vue";
 
+const filters = {
+  all: (todos) => todos,
+  active: (todos) => todos.filter((todo) => !todo.done),
+  completed: (todos) => todos.filter((todo) => todo.done),
+};
+
 export default {
   name: "Home",
+  props: {
+    filter: String,
+  },
   components: {
     TodoItem,
+  },
+  data() {
+    return {
+      visibility: this.filter,
+      filters: filters,
+    };
   },
   computed: {
     todos() {
@@ -52,6 +80,9 @@ export default {
     },
     allChecked() {
       return this.todos.every((todo) => todo.done);
+    },
+    filteredTodos() {
+      return filters[this.visibility](this.todos);
     },
     remaining() {
       return this.todos.filter((todo) => !todo.done).length;
@@ -62,15 +93,15 @@ export default {
     addTodo(e) {
       const text = e.target.value;
       if (text.trim()) {
-        // Add new todo
         this.$store.dispatch("addTodo", text);
-
-        // Clear input text
         e.target.value = "";
       }
     },
     pluralize(n, w) {
       return n === 1 ? w : w + "s";
+    },
+    capitalize(s) {
+      return s.charAt(0).toUpperCase() + s.slice(1);
     },
   },
 };
