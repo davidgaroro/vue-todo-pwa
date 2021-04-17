@@ -1,13 +1,17 @@
 import { createStore } from "vuex";
 
+const STORAGE_KEY = "vue-todo-pwa";
+
+const todos = [
+  { id: 1, text: "Learn JavaScript", done: true },
+  { id: 2, text: "Learn Vue 3", done: true },
+  { id: 3, text: "Learn Bootstrap 5", done: false },
+  { id: 4, text: "Build something awesome!", done: false },
+];
+
 // initial state
 const state = {
-  todos: [
-    { id: 1, text: "Learn JavaScript", done: true },
-    { id: 2, text: "Learn Vue 3", done: true },
-    { id: 3, text: "Learn Bootstrap 5", done: false },
-    { id: 4, text: "Build something awesome!", done: false },
-  ],
+  todos: JSON.parse(window.localStorage.getItem(STORAGE_KEY)) || todos,
 };
 
 // mutations
@@ -68,9 +72,18 @@ const actions = {
   },
 };
 
+// plugins
+const plugins = [
+  (store) => {
+    store.subscribe((mutation, { todos }) => {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
+    });
+  },
+];
+
 export default createStore({
   state,
   mutations,
   actions,
-  modules: {},
+  plugins,
 });
