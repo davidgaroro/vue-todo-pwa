@@ -1,5 +1,5 @@
 <template>
-  <h1 class="mt-5 mb-4 text-primary">TODOS</h1>
+  <h1 class="text-primary mt-5 mb-4">TODOS</h1>
   <input
     class="form-control form-control-lg mb-3"
     type="text"
@@ -19,9 +19,8 @@
           :checked="allChecked"
           @change="toggleAll(!allChecked)"
         />
-        <span class="px-1 text-secondary">
-          {{ remaining }}
-          {{ pluralize(remaining, "item") }} left
+        <span class="text-secondary px-1">
+          {{ remaining }} {{ pluralize(remaining, "item") }} left
         </span>
       </div>
       <nav class="nav">
@@ -32,8 +31,8 @@
               :href="'#/' + key"
               :class="{ 'link-secondary': visibility !== key }"
               @click="visibility = key"
-              >{{ capitalize(key) }}</a
-            >
+              >{{ capitalize(key) }}
+            </a>
           </li>
         </ul>
       </nav>
@@ -91,8 +90,8 @@ export default {
   methods: {
     ...mapActions(["toggleAll", "clearCompleted"]),
     addTodo(e) {
-      const text = e.target.value;
-      if (text.trim()) {
+      const text = e.target.value.trim();
+      if (text) {
         this.$store.dispatch("addTodo", text);
         e.target.value = "";
       }

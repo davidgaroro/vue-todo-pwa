@@ -1,5 +1,5 @@
 <template>
-  <footer class="small mt-5 text-secondary">
+  <footer class="text-secondary small my-5">
     <p class="mb-2">
       Made with
       <a

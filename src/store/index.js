@@ -2,7 +2,7 @@ import { createStore } from "vuex";
 
 const STORAGE_KEY = "vue-todo-pwa";
 
-const todos = [
+const defaultTodos = [
   { id: 1, text: "Learn JavaScript", done: true },
   { id: 2, text: "Learn Vue 3", done: true },
   { id: 3, text: "Learn Bootstrap 5", done: false },
@@ -11,7 +11,7 @@ const todos = [
 
 // initial state
 const state = {
-  todos: JSON.parse(window.localStorage.getItem(STORAGE_KEY)) || todos,
+  todos: JSON.parse(window.localStorage.getItem(STORAGE_KEY)) || defaultTodos,
 };
 
 // mutations
