@@ -50,8 +50,9 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
-import TodoItem from "@/components/TodoItem.vue";
+import { ref, computed } from "vue";
+import { useStore } from "vuex";
+import TodoItem from "@/components/TodoItem.composition.vue";
 
 const filters = {
   all: (todos) => todos,
@@ -67,41 +68,56 @@ export default {
   components: {
     TodoItem,
   },
-  data() {
-    return {
-      visibility: this.filter,
-      filters: filters,
-    };
-  },
-  computed: {
-    todos() {
-      return this.$store.state.todos;
-    },
-    allChecked() {
-      return this.todos.every((todo) => todo.done);
-    },
-    filteredTodos() {
-      return filters[this.visibility](this.todos);
-    },
-    remaining() {
-      return this.todos.filter((todo) => !todo.done).length;
-    },
-  },
-  methods: {
-    ...mapActions(["toggleAll", "clearCompleted"]),
-    addTodo(e) {
+  setup(props) {
+    const store = useStore();
+
+    // data
+    const visibility = ref(props.filter);
+
+    // computed
+    const todos = computed(() => store.state.todos);
+    const allChecked = computed(() => todos.value.every((todo) => todo.done));
+    const filteredTodos = computed(() =>
+      filters[visibility.value](todos.value)
+    );
+    const remaining = computed(
+      () => todos.value.filter((todo) => !todo.done).length
+    );
+
+    // vuex store access
+    const toggleAll = (todo) => store.dispatch("toggleAll", todo);
+    const clearCompleted = () => store.dispatch("clearCompleted");
+
+    // methods
+    function addTodo(e) {
       const text = e.target.value.trim();
       if (text) {
-        this.$store.dispatch("addTodo", text);
+        store.dispatch("addTodo", text);
         e.target.value = "";
       }
-    },
-    pluralize(n, w) {
-      return n === 1 ? w : w + "s";
-    },
-    capitalize(s) {
-      return s.charAt(0).toUpperCase() + s.slice(1);
-    },
+    }
+
+    const pluralize = (n, w) => (n === 1 ? w : w + "s");
+    const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+
+    // expose to template
+    return {
+      //data
+      visibility,
+      filters,
+      // computed
+      todos,
+      allChecked,
+      filteredTodos,
+      remaining,
+      // vuex actions
+      toggleAll,
+      clearCompleted,
+      // methods
+      addTodo,
+      pluralize,
+      capitalize,
+    };
   },
 };
 </script>

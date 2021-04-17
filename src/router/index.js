@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import Home from "../views/Home.vue";
+// import Home from "../views/Home.composition.vue"; // made with composition api
 
 const routes = [
   {
