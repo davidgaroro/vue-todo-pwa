@@ -1,6 +1,6 @@
 # vue-todo-pwa
 
-This project is a simple Todo [PWA] (Progressive Web App) based on the Vuex [TodoMVC] example.
+This project is a simple Todo [PWA] (Progressive Web App) based on the Vuex [TodoMVC] example.<br>
 Perfect to learn the basics about [Vue 3], [Vuex] and [Bootstrap 5] technologies.
 
 [pwa]: https://developers.google.com/web/progressive-web-apps
@@ -9,6 +9,14 @@ Perfect to learn the basics about [Vue 3], [Vuex] and [Bootstrap 5] technologies
 [vuex]: https://next.vuex.vuejs.org
 [bootstrap 5]: https://getbootstrap.com
 
+
+<p align="center">
+  <a href="https://davidgaroro.github.io/vue-todo-pwa" target="_blank" rel="noopener">
+    <img src="https://i.imgur.com/2kAywUP.png">
+    Live Demo
+  </a>
+</p>
+
 ## Built With
 
 ### Dependencies
@@ -16,16 +24,16 @@ Perfect to learn the basics about [Vue 3], [Vuex] and [Bootstrap 5] technologies
 | Name           | Description                                          |     |
 | -------------- | ---------------------------------------------------- | :-: |
 | [Vue 3]        | Progressive JavaScript Framework                     | 🖖  |
-| [Vue Router 4] | Official Router for Vue.js                           | 🚦  |
 | [Vuex 4]       | ️Centralized State Management for Vue.js             | 🗃️  |
-| [Bootstrap 5]  | The most popular HTML, CSS, and JavaScript framework | 📚  |
+| [Vue Router 4] | Official Router for Vue.js                           | 🚦  |
 | [Vue CLI 4]    | ️Standard Tooling for Vue.js Development             | 🛠️  |
+| [Bootstrap 5]  | The most popular HTML, CSS, and JavaScript framework | 📚  |
 
-[vue 3]: https://vuejs.org
-[vue router 4]: https://next.router.vuejs.org/
-[vuex 4]: https://next.vuex.vuejs.org/
+[vue 3]: https://v3.vuejs.org
+[vuex 4]: https://next.vuex.vuejs.org
+[vue router 4]: https://next.router.vuejs.org
+[vue cli 4]: https://cli.vuejs.org
 [bootstrap 5]: https://getbootstrap.com
-[vue cli 4]: https://cli.vuejs.org/
 
 ## Vue Composition API (optional)
 
