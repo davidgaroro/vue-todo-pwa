@@ -12,7 +12,7 @@ Perfect to learn the basics about [Vue 3], [Vuex] and [Bootstrap 5] technologies
 
 <p align="center">
   <a href="https://davidgaroro.github.io/vue-todo-pwa" target="_blank" rel="noopener">
-    <img src="https://i.imgur.com/2kAywUP.png">
+    <img src="https://i.imgur.com/2kAywUP.png"><br>
     Live Demo
   </a>
 </p>
