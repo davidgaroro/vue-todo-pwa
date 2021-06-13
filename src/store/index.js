@@ -1,34 +1,25 @@
 import { createStore } from "vuex";
 import kappa from "kappa-core";
-// import raw from "random-access-web";
 import rai from "random-access-idb";
-// import hyperswarm from "hyperswarm-web";
-// import pump from "pump";
-import list from "kappa-view-list";
+import hyperswarm from "hyperswarm-web";
+import pump from "pump";
+import makeView from 'kappa-view';
 import level from "level";
-// import delay from "lodash/delay";
 
 const STORAGE_KEY = "vue-todo-pwa";
 
-const defaultTodos = [
-  { id: 1, text: "Learn JavaScript", done: true },
-  { id: 2, text: "Learn Vue 3", done: true },
-  { id: 3, text: "Learn Bootstrap 5", done: false },
-  { id: 4, text: "Build something awesome!", done: false },
-];
-
 // initial state
 const state = {
-  todos: JSON.parse(window.localStorage.getItem(STORAGE_KEY)) || defaultTodos,
+  todos: [],
 };
 
 // mutations
 const mutations = {
-  addTodo(state, todo) {
+  addTodo(state, { todo }) {
     state.todos.push(todo);
   },
 
-  removeTodo(state, todo) {
+  removeTodo(state, { todo }) {
     state.todos.splice(state.todos.indexOf(todo), 1);
   },
 
@@ -41,20 +32,26 @@ const mutations = {
       done,
     });
   },
+
+  receiveData(state, data) {
+    state.todos.splice(0, state.todos.length, ...data);
+  },
 };
 
 // actions
 const actions = {
   addTodo({ commit }, text) {
     commit("addTodo", {
-      id: Date.now(),
-      text,
-      done: false,
+      todo: {
+        id: Date.now(),
+        text,
+        done: false,
+      },
     });
   },
 
   removeTodo({ commit }, todo) {
-    commit("removeTodo", todo);
+    commit("removeTodo", { todo });
   },
 
   toggleTodo({ commit }, todo) {
@@ -75,73 +72,131 @@ const actions = {
     state.todos
       .filter((todo) => todo.done)
       .forEach((todo) => {
-        commit("removeTodo", todo);
+        commit("removeTodo", { todo });
       });
   },
 };
 
-// const topic = crypto.subtle.digest("SHA-256", STORAGE_KEY);
-// const swarm = hyperswarm()
-// const dedupeId = crypto.getRandomValues(new Uint32Array(32));
+function ArrayBufferFromString(str) {
+  const buf = new ArrayBuffer(str.length * 2); // 2 bytes for each char
+  const bufView = new Uint16Array(buf);
+  for (let i = 0, strLen = str.length; i < strLen; i++) {
+    bufView[i] = str.charCodeAt(i);
+  }
+  return buf;
+}
 
-const timestampView = list(level("vue-todo-level"), function (msg, next) {
-  if (msg.value.timestamp && typeof msg.value.timestamp === "string") {
-    // sort on the 'timestamp' field
-    next(null, [msg.value.timestamp]);
-  } else {
-    next();
+var kvView = makeView(level(STORAGE_KEY + '-kv', { valueEncoding: "json" }), { valueEncoding: "json" }, function (db) {
+  return {
+    map: function (entries, next) {
+      var batch = entries.map(function (entry) {
+        let { id, type, ...value } = entry.value;
+        return {
+          type: type === 'removeTodo' ? 'del' : 'put',
+          key: id,
+          value: value,
+        }
+      })
+      db.batch(batch, next)
+    },
+
+    api: {
+      get: function (core, key, cb) {
+        core.ready(function () {
+          db.get(key, cb)
+        })
+      },
+      all: function (core, cb) {
+        core.ready(() => {
+          const data = [];
+          db.createReadStream()
+            .on('data', (entry) => { data.push(entry); })
+            .on('end', () => { cb(data); });
+        });
+      },
+      onUpdate: (core, cb) => {
+        core.ready(() => {
+          db.on('put', cb);
+        })
+      },
+      onDelete: (core, cb) => {
+        core.ready(() => {
+          db.on('del', cb);
+        })
+      },
+      onBatch: (core, cb) => {
+        core.ready(() => {
+          db.on('batch', cb);
+        })
+      },
+    }
   }
 });
 
 // plugins
 const plugins = [
-  (store) => {
-    store.subscribe((mutation, { todos }) => {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
-    });
-
-    const core = kappa(rai("vue-todo-kappa"), { valueEncoding: "json" });
+  async (store) => {
+    const topic = await crypto.subtle.digest(
+      "SHA-256",
+      ArrayBufferFromString(STORAGE_KEY)
+    );
+    const swarm = hyperswarm(/* { bootstrap: ['ws://192.168.29.7:4977'], } */);
+    const dedupeId = crypto.getRandomValues(new Uint32Array(32));
+    const core = kappa(rai(STORAGE_KEY + "-kappa"), { valueEncoding: "json" });
     window.core = core;
-    core.use("chats", timestampView);
+    core.use("kv", kvView);
     core.writer("local", function (err, feed) {
-      // swarm.join(topic, { lookup: true, announce: true })
-      // swarm.on('connection', function (connection, info) {
-      //   connection.write(dedupeId)
-      //   connection.once('data', function (id) {
-      //     const dupe = info.deduplicate(dedupeId, id)
-      //     console.log(dupe ? '[Dupe peer dropped]' : '[New peer connected!]')
-      //     pump(connection, core.replicate(info.client, { live: true }), connection)
-      //   });
-      // });
-      // swarm.on('updated', () => {
-      //   console.log("Updated");
-      // });
+      swarm.join(Buffer(topic), { lookup: true, announce: true });
+      swarm.on("connection", function (connection, info) {
+        console.log("blah");
+        connection.write(dedupeId);
+        connection.once("data", function (id) {
+          const dupe = info.deduplicate(dedupeId, id);
+          console.log(dupe ? "[Dupe peer dropped]" : "[New peer connected!]");
+          pump(
+            connection,
+            core.replicate(info.client, { live: true }),
+            connection
+          );
+        });
+      });
+      swarm.on("updated", () => {
+        console.log("Updated");
+      });
 
-      store.subscribe((mutation) => {
+      store.subscribe(({ type, payload }, state) => {
+        if (type === "receiveData") {
+          return;
+        }
+        const todoId = payload.todo.id;
+        const todo = state.todos.find((t) => t.id === todoId);
         feed.append({
-          type: "mutation",
-          mutation: mutation,
+          type,
           timestamp: new Date().toISOString(),
+          ...todo
         });
       });
     });
 
-    core.ready(["chats"], function () {
-      console.log("Ready");
-      // Delay 300ms to catch up with remote
-      // Get latest 10 messages
-      core.api.chats.read({ limit: 10, reverse: true }, function (err, data) {
-        if (data.length === 0) return;
-        console.log("Recent messages:");
-        for (let msg of data.reverse()) {
-          console.log(msg.value.timestamp, msg.value.mutation, msg.key);
-        }
+    core.ready([], function () {
+      // Load all messages
+      core.api.kv.all((data) => {
+        store.commit(
+          "receiveData",
+          data.map(({ key, value }) => {
+          return {
+            id: key,
+            ...value,
+            };
+          })
+        );
       });
-      // Listen for latest message.
-      core.api.chats.tail(1, function (data) {
-        for (let msg of data) {
-          console.log(msg.value.timestamp, msg.value.mutation, msg.key)
-        }
+      // // Listen for latest message.
+      core.api.kv.on("update", (k, v) => {
+        console.log(k, v);
+      });
+      core.api.kv.on("batch", (ops) => {
+        console.log(ops);
       });
     });
   },

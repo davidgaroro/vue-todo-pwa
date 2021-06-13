@@ -5,4 +5,8 @@ module.exports = {
       short_name: "vue-todo",
     },
   },
+  devServer: {
+    allowedHosts: [".ngrok.io", "localhost", "192.168.20.7"],
+    https: true,
+  },
 };

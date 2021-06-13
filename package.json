@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "hyperswarm": "hyperswarm-web"
   },
   "dependencies": {
     "bootstrap": "^5.0.0-beta3",
@@ -13,6 +14,7 @@
     "hyperswarm": "^2.15.3",
     "hyperswarm-web": "^2.1.1",
     "kappa-core": "^7.0.0",
+    "kappa-view": "^3.1.0",
     "kappa-view-kv": "^2.0.2",
     "kappa-view-list": "1.1.2",
     "level": "^7.0.0",

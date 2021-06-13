@@ -5828,6 +5828,15 @@ kappa-view-list@1.1.2:
     subleveldown "^4.0.0"
     through2 "^3.0.1"
 
+kappa-view@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/kappa-view/-/kappa-view-3.1.0.tgz#6a4382f6b2b269b6adfa87710a5d67416dbe3a04"
+  integrity sha512-3VrSiqoBm5DXTMIoYp4XYF+gcnlxf1NGfG8c9fRlR5pt8dDvN8DD7n5x0wkVz7k9Aoperbe/Pcq3OQ/IIx1FVQ==
+  dependencies:
+    pump "^3.0.0"
+    readable-stream "^3.4.0"
+    subleveldown "^4.0.0"
+
 killable@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/killable/-/killable-1.0.1.tgz#4c8ce441187a061c7474fb87ca08e2a638194892"
