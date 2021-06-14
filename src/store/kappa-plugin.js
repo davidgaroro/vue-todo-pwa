@@ -20,7 +20,6 @@ export default async (store) => {
   const topic = Buffer.from(
     await crypto.subtle.digest("SHA-256", ArrayBufferFromString(STORAGE_KEY))
   );
-  const dedupeId = Buffer(crypto.getRandomValues(new Uint32Array(32)));
   const swarm = hyperswarm(/* { bootstrap: ['ws://192.168.29.7:4977'], } */);
   window.swarm = swarm;
   const core = kappa(rai(STORAGE_KEY + "-kappa"), {
@@ -31,20 +30,8 @@ export default async (store) => {
   core.writer("local", function (err, feed) {
     swarm.join(topic, { lookup: true, announce: true });
     swarm.on("connection", function (connection, info) {
-      console.log("blah");
-      connection.write(dedupeId);
-      connection.once("data", function (id) {
-        const dupe = info.deduplicate(dedupeId, id);
-        console.log(dupe ? "[Dupe peer dropped]" : "[New peer connected!]");
-        pump(
-          connection,
-          core.replicate(info.client, { live: true }),
-          connection
-        );
-      });
-    });
-    swarm.on("updated", () => {
-      console.log("Updated");
+      console.log("[New peer connected!]");
+      pump(connection, core.replicate(info.client, { live: true }), connection);
     });
 
     store.subscribe(({ type, payload: { todo } }, state) => {
