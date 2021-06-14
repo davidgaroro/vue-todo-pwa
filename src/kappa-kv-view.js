@@ -4,14 +4,16 @@ const makeKvView = (storage) => {
   return makeView(storage, { valueEncoding: "json" }, function (db) {
     return {
       map: function (entries, next) {
-        const batch = entries.map(function (entry) {
-          const { id, type, ...value } = entry.value;
-          return {
-            type: type === "del" ? "del" : "put",
-            key: id,
-            value: value,
-          };
-        });
+        const batch = entries
+          .map(function (entry) {
+            const { id, type, ...value } = entry.value;
+            return {
+              type: type === "del" ? "del" : "put",
+              key: id,
+              value: value,
+            };
+          })
+          .filter(({ key }) => !!key);
         db.batch(batch, next);
       },
 
