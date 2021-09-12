@@ -30,7 +30,6 @@
               class="nav-link px-2 py-1"
               :href="'#/' + key"
               :class="{ 'link-secondary': visibility !== key }"
-              @click="visibility = key"
               >{{ capitalize(key) }}
             </a>
           </li>
@@ -50,7 +49,7 @@
 </template>
 
 <script>
-import { ref, computed } from "vue";
+import { computed } from "vue";
 import { useStore } from "vuex";
 import TodoItem from "@/components/TodoItem.composition.vue";
 
@@ -72,7 +71,7 @@ export default {
     const store = useStore();
 
     // data
-    const visibility = ref(props.filter);
+    const visibility = computed(()=>props.filter);
 
     // computed
     const todos = computed(() => store.state.todos);
